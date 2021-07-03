@@ -66,7 +66,7 @@ class HibernateNPlusOneDemoApplicationTests {
 
     }
 
-    private ResultActions getOrders() throws Exception {
+    ResultActions getOrders() throws Exception {
         return mockMvc.perform(
                 MockMvcRequestBuilders.get(String.format("/clients/%s/orders", clientId))
         );

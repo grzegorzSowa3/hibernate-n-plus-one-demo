@@ -21,8 +21,7 @@ class ShopOrder {
 
     private UUID clientId;
 
-    @OneToMany(fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
     private Set<OrderPosition> positions;
 
