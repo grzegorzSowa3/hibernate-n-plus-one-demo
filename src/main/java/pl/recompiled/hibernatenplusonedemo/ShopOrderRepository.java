@@ -1,6 +1,5 @@
 package pl.recompiled.hibernatenplusonedemo;
 
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Set;
