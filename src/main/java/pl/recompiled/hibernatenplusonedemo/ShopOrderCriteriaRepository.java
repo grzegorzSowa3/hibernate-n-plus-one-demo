@@ -1,8 +1,10 @@
 package pl.recompiled.hibernatenplusonedemo;
 
-import java.util.Set;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 import java.util.UUID;
 
 public interface ShopOrderCriteriaRepository {
-    Set<ShopOrder> findAllByClientId(UUID clientId);
+    List<ShopOrder> findAllByClientId(UUID clientId, Pageable pageable);
 }

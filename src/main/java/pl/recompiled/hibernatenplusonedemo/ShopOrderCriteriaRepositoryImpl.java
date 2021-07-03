@@ -1,6 +1,7 @@
 package pl.recompiled.hibernatenplusonedemo;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -10,9 +11,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Repository
 public class ShopOrderCriteriaRepositoryImpl implements ShopOrderCriteriaRepository {
@@ -21,16 +21,19 @@ public class ShopOrderCriteriaRepositoryImpl implements ShopOrderCriteriaReposit
     private EntityManager entityManager;
 
     @Override
-    public Set<ShopOrder> findAllByClientId(UUID clientId) {
+    public List<ShopOrder> findAllByClientId(UUID clientId, Pageable pageable) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 
         CriteriaQuery<ShopOrder> query = criteriaBuilder.createQuery(ShopOrder.class);
         Root<ShopOrder> shopOrder = query.from(ShopOrder.class);
         shopOrder.fetch("positions", JoinType.LEFT);
         query.select(shopOrder);
+        query.orderBy(QueryUtils.toOrders(pageable.getSort(), shopOrder, criteriaBuilder));
 
         TypedQuery<ShopOrder> typedQuery = entityManager.createQuery(query);
-        return typedQuery.getResultStream()
-                .collect(Collectors.toSet());
+        typedQuery.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+        typedQuery.setMaxResults(pageable.getPageSize());
+
+        return typedQuery.getResultList();
     }
 }

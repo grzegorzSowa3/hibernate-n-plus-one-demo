@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,6 +22,8 @@ class ShopOrder {
 
     private UUID clientId;
 
+    private LocalDateTime createdAt;
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
     private Set<OrderPosition> positions;
@@ -34,6 +37,7 @@ class ShopOrder {
     static ShopOrder of(UUID clientId, OrderPosition... positions) {
         final ShopOrder shopOrder = newInstance();
         shopOrder.clientId = clientId;
+        shopOrder.createdAt = LocalDateTime.now();
         for (OrderPosition position : positions) {
             shopOrder.addPosition(position);
         }
