@@ -8,7 +8,6 @@ import java.util.UUID;
 
 interface ShopOrderRepository extends CrudRepository<ShopOrder, Long> {
 
-    @EntityGraph(attributePaths = {"positions"})
     Set<ShopOrder> findAllByClientId(UUID clientId);
 
 }
