@@ -5,9 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Persistable;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
@@ -19,10 +17,11 @@ class OrderPosition implements Persistable<UUID> {
     private UUID id;
     @Transient
     private boolean isNew;
-    private String product;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Product product;
     private Integer quantity;
 
-    static OrderPosition of(String product, Integer quantity) {
+    static OrderPosition of(Product product, Integer quantity) {
         final OrderPosition position = new OrderPosition();
         position.id = UUID.randomUUID();
         position.isNew = true;

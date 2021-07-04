@@ -25,7 +25,7 @@ class ShopOrderDto {
         dto.positions.addAll(
                 shopOrder.getPositions()
                         .stream()
-                        .map(position -> new OrderPositionDto(position.getId(), position.getProduct(), position.getQuantity()))
+                        .map(position -> new OrderPositionDto(position.getId(), position.getProduct().getName(), position.getQuantity()))
                         .collect(Collectors.toSet()));
         return dto;
     }

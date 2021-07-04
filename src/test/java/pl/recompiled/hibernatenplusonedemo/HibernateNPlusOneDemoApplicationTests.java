@@ -50,17 +50,21 @@ class HibernateNPlusOneDemoApplicationTests {
         List<ShopOrder> orders = new ArrayList<>();
 
         orders.add(ShopOrder.of(clientId,
-                OrderPosition.of("Milk", 2),
-                OrderPosition.of("Butter", 1),
-                OrderPosition.of("Egg", 10),
-                OrderPosition.of("Paprika", 2),
-                OrderPosition.of("Cucumber", 1),
-                OrderPosition.of("Banana", 5)));
+                OrderPosition.of(Product.of("Milk"), 2),
+                OrderPosition.of(Product.of("Butter"), 1),
+                OrderPosition.of(Product.of("Egg"), 10),
+                OrderPosition.of(Product.of("Paprika"), 2),
+                OrderPosition.of(Product.of("Cucumber"), 1),
+                OrderPosition.of(Product.of("Banana"), 5)));
 
         orders.add(ShopOrder.of(clientId,
-                OrderPosition.of("Beer", 6),
-                OrderPosition.of("Crisps", 2),
-                OrderPosition.of("Peanuts", 2)));
+                OrderPosition.of(Product.of("Beer"), 6),
+                OrderPosition.of(Product.of("Crisps"), 2),
+                OrderPosition.of(Product.of("Peanuts"), 2)));
+
+        orders.add(ShopOrder.of(clientId,
+                OrderPosition.of(Product.of("Toothpaste"), 1),
+                OrderPosition.of(Product.of("Deodorant"), 1)));
 
         repository.saveAll(orders);
 
