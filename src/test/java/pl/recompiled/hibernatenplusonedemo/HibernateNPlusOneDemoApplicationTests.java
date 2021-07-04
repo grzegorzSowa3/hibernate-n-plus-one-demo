@@ -41,7 +41,7 @@ class HibernateNPlusOneDemoApplicationTests {
         getOrders()
                 .andExpect(status().isOk());
 
-        assertEquals(1, queryExecutionListener.getCount());
+        assertEquals(2, queryExecutionListener.getCount());
 
     }
 

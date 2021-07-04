@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,20 +20,30 @@ public class ShopOrderCriteriaRepositoryImpl implements ShopOrderCriteriaReposit
 
     @Override
     public List<ShopOrder> findAllByClientId(UUID clientId, Pageable pageable) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        final List<Long> ids = getIdsPage(pageable, builder);
 
-        CriteriaQuery<ShopOrder> query = criteriaBuilder.createQuery(ShopOrder.class);
-        Root<ShopOrder> shopOrder = query.from(ShopOrder.class);
-        shopOrder.fetch("positions", JoinType.LEFT)
+        CriteriaQuery<ShopOrder> query = builder.createQuery(ShopOrder.class);
+
+        final Root<ShopOrder> root = query.from(ShopOrder.class);
+        root.fetch("positions", JoinType.LEFT)
                 .fetch("product", JoinType.LEFT);
 
-        query.select(shopOrder);
-        query.orderBy(QueryUtils.toOrders(pageable.getSort(), shopOrder, criteriaBuilder));
+        query.select(root).where(root.get("id").in(ids));
+        return entityManager.createQuery(query).getResultList();
+    }
 
-        TypedQuery<ShopOrder> typedQuery = entityManager.createQuery(query);
-        typedQuery.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
-        typedQuery.setMaxResults(pageable.getPageSize());
+    private List<Long> getIdsPage(Pageable pageable, CriteriaBuilder builder) {
+        CriteriaQuery<Long> idQuery = builder.createQuery(Long.class);
+        Root<ShopOrder> idQueryRoot = idQuery.from(ShopOrder.class);
 
-        return typedQuery.getResultList();
+        idQuery.select(idQueryRoot.get("id"));
+        idQuery.orderBy(QueryUtils.toOrders(pageable.getSort(), idQueryRoot, builder));
+
+        TypedQuery<Long> idQueryTyped = entityManager.createQuery(idQuery);
+        idQueryTyped.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+        idQueryTyped.setMaxResults(pageable.getPageSize());
+
+        return idQueryTyped.getResultList();
     }
 }
